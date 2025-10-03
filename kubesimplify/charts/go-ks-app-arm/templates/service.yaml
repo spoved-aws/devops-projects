@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ include "go-ks-app-arm.name" . }}
+  {{ include "go-ks-app-arm.labels" . | nindent 4 }}
+spec:
+  selector:
+    app: {{ include "go-ks-app-arm.name" . }}
+  {{ include "go-ks-app-arm.selectorLabels" . | nindent 4 }}
+  ports:
+    - protocol: TCP
+      name: {{ .Values.service.portName }}
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.containerPort }}
+  type: {{ .Values.service.type }}

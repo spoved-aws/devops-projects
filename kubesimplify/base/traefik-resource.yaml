@@ -1,0 +1,54 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: go-ks-traefik
+  namespace: kubesimplify-go
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  rules:
+  - host: go-ks.654537853.xyz
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: go-ks-app-arm64-service
+            port:
+              number: 8088
+  tls:
+  - hosts:
+    - go-ks.654537853.xyz
+    secretName: go-ks-app-com-tls
+
+
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: go-ks-traefik
+#   namespace: kubesimplify-go
+#   annotations:
+#     traefik.ingress.kubernetes.io/router.entrypoints: web
+#     # Remove the TLS annotation for now since you're testing HTTP
+#     # traefik.ingress.kubernetes.io/router.tls: "true"
+#     # cert-manager.io/cluster-issuer: letsencrypt-prod
+# spec:
+#   rules:
+#   - host: go-ks.654537853.xyz
+#     http:
+#       paths:
+#       - path: /
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: my-app-service
+#             port:
+#               number: 8088
+#   # Remove the TLS block until you are ready to test HTTPS
+#   # tls:
+#   # - hosts:
+#   #   - go-ks.654537853.xyz
+#   #   secretName: letsencrypt-prod

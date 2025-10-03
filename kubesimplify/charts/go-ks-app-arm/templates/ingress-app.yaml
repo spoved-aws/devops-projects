@@ -1,0 +1,53 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.ingress.ingresssApp }}
+  # namespace: {{ .Values.namespace }}
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: {{ .Values.ingress.entrypoints }}
+    traefik.ingress.kubernetes.io/router.tls: "{{ .Values.ingress.tlsEnabled }}"
+    cert-manager.io/cluster-issuer: {{ .Values.ingress.clusterIssuer }}
+spec:
+  rules:
+    - host: {{ .Values.ingress.appHost }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.service.name }}
+                port:
+                  number: {{ .Values.service.port }}
+  tls:
+    - hosts:
+        - {{ .Values.ingress.appHost }}
+      secretName: {{ .Values.ingress.appSecretName }} #this is the name of the certificate that gets generated
+
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: go-ks-traefik
+#   namespace: kubesimplify-go
+#   annotations:
+#     traefik.ingress.kubernetes.io/router.entrypoints: web
+#     # Remove the TLS annotation for now since you're testing HTTP
+#     # traefik.ingress.kubernetes.io/router.tls: "true"
+#     # cert-manager.io/cluster-issuer: letsencrypt-prod
+# spec:
+#   rules:
+#   - host: go-ks.654537853.xyz
+#     http:
+#       paths:
+#       - path: /
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: my-app-service
+#             port:
+#               number: 8088
+#   # Remove the TLS block until you are ready to test HTTPS
+#   # tls:
+#   # - hosts:
+#   #   - go-ks.654537853.xyz
+#   #   secretName: letsencrypt-prod

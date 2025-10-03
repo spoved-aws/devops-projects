@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ksarm
+  namespace: argocd  # This is the ArgoCD namespace, not the target namespace
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/spoved-aws/go-ks-app-arm.git
+    targetRevision: HEAD
+    path: charts/go-ks-app-arm  # Path to the Helm chart
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ksgo-arm          # This is the namespace where resources will be deployed
+ 
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true

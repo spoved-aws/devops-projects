@@ -1,0 +1,59 @@
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: go-ks-app-arm64
+    namespace: kubesimplify-go
+    labels:
+      app: go-ks-app-arm64
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: go-ks-app-arm64
+    template:
+      metadata:
+        labels:
+          app: go-ks-app-arm64
+      spec:
+        containers:
+          - name: go-ks-app-arm64
+            image: docker.io/kanukhosla10/go-kubesimplify:sha-5c5a6ab
+            imagePullPolicy: Always
+            env:
+              - name: DB_USERNAME
+                valueFrom:
+                  secretKeyRef:
+                    name: postgresql-credentials
+                    key: username
+              - name: DB_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: postgresql-credentials
+                    key: password
+              - name: DB_HOST
+                value: my-postgresql-rw.kubesimplify-go.svc.cluster.local
+              - name: DB_PORT
+                value: "5432"
+              - name: DB_NAME
+                value: goals_database
+            ports:
+              - containerPort: 8080
+            readinessProbe:
+              httpGet:
+                path: /health
+                port: 8080
+              initialDelaySeconds: 5
+              periodSeconds: 10
+            livenessProbe:
+              httpGet:
+                path: /health
+                port: 8080
+              initialDelaySeconds: 15
+              periodSeconds: 20
+            resources:
+              requests:
+                memory: 350Mi
+                cpu: 250m
+              limits:
+                memory: 500Mi
+                cpu: 500m

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: go-ks-app-arm64-service
+  namespace: kubesimplify-go
+  labels:
+    app: go-ks-app-arm64
+spec:
+  selector:
+    app: go-ks-app-arm64
+  ports:
+    - protocol: TCP
+      name: http # this name is getting used in the service monitor
+      port: 8088
+      targetPort: 8080
+  type: ClusterIP

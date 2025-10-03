@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.ingress.argoIngressName }}
+  namespace: argocd
+  annotations:
+    traefik.ingress.kubernetes.io/router.entrypoints: {{ .Values.ingress.entrypoints }}
+    traefik.ingress.kubernetes.io/router.tls: "{{ .Values.ingress.tlsEnabled }}"
+    cert-manager.io/cluster-issuer: {{ .Values.ingress.clusterIssuer }}
+spec:
+  rules:
+    - host: {{ .Values.ingress.argoHost }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.argocd.serviceName }}
+                port:
+                  number: {{ .Values.argocd.servicePort }}
+  tls:
+    - hosts:
+        - {{ .Values.ingress.argoHost }}
+      secretName: {{ .Values.ingress.secretName }}
