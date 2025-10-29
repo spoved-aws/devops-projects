@@ -1,0 +1,105 @@
+---
+# Source: my_first_app/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: my-first-app-my_first_app
+  labels:
+    helm.sh/chart: my_first_app-0.1.0
+    app.kubernetes.io/name: my_first_app
+    app.kubernetes.io/instance: my-first-app
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+automountServiceAccountToken: true
+---
+# Source: my_first_app/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-first-app-my_first_app
+  labels:
+    helm.sh/chart: my_first_app-0.1.0
+    app.kubernetes.io/name: my_first_app
+    app.kubernetes.io/instance: my-first-app
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: my_first_app
+    app.kubernetes.io/instance: my-first-app
+---
+# Source: my_first_app/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-first-app-my_first_app
+  labels:
+    helm.sh/chart: my_first_app-0.1.0
+    app.kubernetes.io/name: my_first_app
+    app.kubernetes.io/instance: my-first-app
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: my_first_app
+      app.kubernetes.io/instance: my-first-app
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: my_first_app-0.1.0
+        app.kubernetes.io/name: my_first_app
+        app.kubernetes.io/instance: my-first-app
+        app.kubernetes.io/version: "1.16.0"
+        app.kubernetes.io/managed-by: Helm
+    spec:
+      serviceAccountName: my-first-app-my_first_app
+      containers:
+        - name: my_first_app
+          image: "nginx:1.16.0"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          env:
+          - name: LOG_LEVEL
+            value: "INFO"
+          - name: FEATURE_FLAG
+            value: "ENABLED"
+---
+# Source: my_first_app/templates/tests/test-connection.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "my-first-app-my_first_app-test-connection"
+  labels:
+    helm.sh/chart: my_first_app-0.1.0
+    app.kubernetes.io/name: my_first_app
+    app.kubernetes.io/instance: my-first-app
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['my-first-app-my_first_app:80']
+  restartPolicy: Never

@@ -1,0 +1,5 @@
+apiVersion: v2
+name: golden
+description: Minimal reusable golden chart
+version: 0.1.0
+appVersion: "1.0"
