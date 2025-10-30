@@ -1,0 +1,87 @@
+name: Build and Deploy with go-app-gateway-api
+
+on:
+  push:
+    branches: [ 'feature/go-app-gateway-api' ]
+    paths:
+      - 'go-app-gateway-api/**'
+
+env:
+  KO_DOCKER_REPO: docker.io/kanukhosla10/go-kubesimplify
+  KO_DEFAULTBASEIMAGE: alpine:3
+# Added the below evs to github env directly  
+#   GIT_COMMITTER_EMAIL: kanukhosla10@gmail.com
+#   GIT_COMMITTER_NAME: spoved-aws
+  GO_PATH: /usr/local/go/bin
+  KO_PATH: /usr/local/bin
+  PATH: /usr/local/go/bin:/usr/local/bin:${{ env.PATH }}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout the repo
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # needed for git rev-parse
+          ref: go-app-gateway-api
+
+      # 2️⃣ Set up Go
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      # 3️⃣ Install ko
+      - name: Install ko
+        run: |
+          curl -sSL https://github.com/ko-build/ko/releases/download/v0.15.1/ko_0.15.1_Linux_x86_64.tar.gz | sudo tar -xz -C /usr/local/bin ko
+          ko version
+
+      # 4️⃣ Log in to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # 5️⃣ Get short git SHA
+      - name: Get short git SHA
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      # 6️⃣ Build and push image using ko
+      - name: Build and Publish Image
+        run: |
+          cd src/
+          ko build --bare -t sha-${sha_short} --platform=linux/arm64 .
+
+      # 7️⃣ Render Helm values.yaml from Jinja template
+      - name: Render Helm values.yaml
+        run: |
+          python3 -m venv venv
+          . venv/bin/activate
+          pip install jinja2-cli
+          jinja2 tmpl/values.j2 -o charts/go-ks-app-arm/values.yaml -D image_deploy_tag=sha-${sha_short} --strict
+          deactivate
+
+      # 8️⃣ Configure git for commit
+      - name: Configure Git
+        run: |
+          git config user.email "${{ env.GIT_COMMITTER_EMAIL }}"
+          git config user.name "${{ env.GIT_COMMITTER_NAME }}"
+
+      # 9️⃣ Commit changes
+      - name: Commit deploy manifest
+        run: |
+          git add charts/go-ks-app-arm/values.yaml
+          git commit -m "updated image tag to sha-${sha_short}" || echo "No changes to commit"
+
+      # 🔟 Push to repo
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.8.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main

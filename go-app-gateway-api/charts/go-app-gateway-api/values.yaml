@@ -1,0 +1,61 @@
+replicaCount: 3
+
+image:
+  repository: docker.io/saiyam911/devops-project
+  tag: sha-4b4583a
+  pullPolicy: Always
+
+service:
+  name: go-app-gateway-api-service
+  port: 80
+  targetPort: 8080
+  type: ClusterIP
+
+env:
+  DB_USERNAME_SECRET: postgresql-credentials
+  DB_PASSWORD_SECRET: postgresql-credentials
+  DB_HOST: my-postgresql-rw.default.svc.cluster.local
+  DB_PORT: "5432"
+  DB_NAME: goals_database
+
+resources:
+  requests:
+    memory: "350Mi"
+    cpu: "250m"
+  limits:
+    memory: "500Mi"
+    cpu: "500m"
+
+gateway:
+  name: app-gateway
+  namespace: default
+  certManagerIssuer: letsencrypt-prod
+  className: nginx
+  listeners:
+    - name: http
+      port: 80
+      protocol: HTTP
+      hostname: app.kubesimplify.com
+    - name: https
+      port: 443
+      protocol: HTTPS
+      hostname: app.kubesimplify.com
+      tlsSecret: app-kubesimplify-com-tls
+    - name: argo-http
+      port: 80
+      protocol: HTTP
+      hostname: argo.kubesimplify.com
+    - name: argo-https
+      port: 443
+      protocol: HTTPS
+      hostname: argo.kubesimplify.com
+      tlsSecret: argo-kubesimplify-com-tls
+
+httproute:
+  name: go-app-route
+  parentGateway: app-gateway
+  hostnames:
+    - app.kubesimplify.com
+  pathPrefix: /
+  serviceName: go-app-gateway-api-service
+  servicePort: 80

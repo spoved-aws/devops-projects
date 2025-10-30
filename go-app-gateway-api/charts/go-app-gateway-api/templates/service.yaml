@@ -1,0 +1,79 @@
+replicaCount: 1
+
+image:
+  repository: docker.io/kanukhosla10/go-kubesimplify
+  tag: sha-7b2c084
+  pullPolicy: Always
+
+resources:
+  requests:
+    memory: '350Mi'
+    cpu: '250m'
+  limits:
+    memory: '500Mi'
+    cpu: '500m'
+
+probes:
+  readiness:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+  liveness:
+    initialDelaySeconds: 15
+    periodSeconds: 20
+
+containerPort: 8080
+readinessProbe:
+  port: 8080
+livenessProbe:
+  port: 8080
+
+autoscaling:
+  hpaName: go-ks-app-hpa
+  minReplicas: 1
+  maxReplicas: 10
+  cpu:
+    averageUtilization: 20
+  memory:
+    averageValue: '350Mi'
+
+service:
+  name: go-ks-app-arm-service
+  portName: http
+  port: 8089
+  type: ClusterIP
+
+ingress:
+  entrypoints: websecure
+  tlsEnabled: "true"
+  clusterIssuer: letsencrypt-prod
+  ingresssApp: go-ks-traefik
+  appHost: go-ks.654537853.xyz
+  appSecretName: go-ks-app-com-tls
+  argoIngressName: argo-ks-ingress
+  argoHost: argo-ks.654537853.xyz
+  secretName: argo-ks-tls
+
+argocd:
+  serviceName: argocd-server
+  servicePort: 80
+
+postgresql:
+  name: goks-postgresql
+  instances: 1
+  storageSize: '1Gi'
+  database: goals_database
+  owner: goals_user
+  port: 5432
+
+
+postgresqlSecret:
+  name: postgresql-credentials
+  secretData:
+    password: new_password
+    username: goals_user
+
+clusterSecret:
+  name: my-postgresql-credentials
+  credentials:
+    username: goals_user
+    password: new_password
