@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "go-ks-app-arm.fullname" . }}
+  name: {{ include "go-app-gateway-api.fullname" . }}
   # namespace: {{ .Values.namespace }}
   labels:
-    app: {{ include "go-ks-app-arm.name" . }}
-  {{ include "go-ks-app-arm.labels" . | nindent 4 }}
+    app: {{ include "go-app-gateway-api.name" . }}
+  {{ include "go-app-gateway-api.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ include "go-ks-app-arm.name" . }}
-    {{ include "go-ks-app-arm.selectorLabels" . | nindent 6 }}
+      app: {{ include "go-app-gateway-api.name" . }}
+    {{ include "go-app-gateway-api.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: {{ include "go-ks-app-arm.name" . }}
-      {{ include "go-ks-app-arm.selectorLabels" . | nindent 8 }}
+        app: {{ include "go-app-gateway-api.name" . }}
+      {{ include "go-app-gateway-api.selectorLabels" . | nindent 8 }}
     spec:
       containers:
         - name: {{ .Chart.Name }}

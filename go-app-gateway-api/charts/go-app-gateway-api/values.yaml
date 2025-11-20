@@ -1,61 +1,135 @@
-replicaCount: 3
+replicaCount: 1
 
 image:
-  repository: docker.io/saiyam911/devops-project
-  tag: sha-4b4583a
+  repository: docker.io/kanukhosla10/go-kubesimplify
+  tag: sha-7b2c084
   pullPolicy: Always
-
-service:
-  name: go-app-gateway-api-service
-  port: 80
-  targetPort: 8080
-  type: ClusterIP
-
-env:
-  DB_USERNAME_SECRET: postgresql-credentials
-  DB_PASSWORD_SECRET: postgresql-credentials
-  DB_HOST: my-postgresql-rw.default.svc.cluster.local
-  DB_PORT: "5432"
-  DB_NAME: goals_database
 
 resources:
   requests:
-    memory: "350Mi"
-    cpu: "250m"
+    memory: '350Mi'
+    cpu: '250m'
   limits:
-    memory: "500Mi"
-    cpu: "500m"
+    memory: '500Mi'
+    cpu: '500m'
+
+probes:
+  readiness:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+  liveness:
+    initialDelaySeconds: 15
+    periodSeconds: 20
+
+containerPort: 8080
+readinessProbe:
+  port: 8080
+livenessProbe:
+  port: 8080
+
+autoscaling:
+  hpaName: go-ks-app-hpa
+  minReplicas: 1
+  maxReplicas: 10
+  cpu:
+    averageUtilization: 20
+  memory:
+    averageValue: '350Mi'
+
+service:
+  name: go-ks-app-arm-service
+  portName: http
+  port: 8089
+  type: ClusterIP
+
+ingress:
+  entrypoints: websecure
+  tlsEnabled: "true"
+  clusterIssuer: letsencrypt-prod
+  ingresssApp: go-ks-traefik
+  appHost: go-ks.654537853.xyz
+  appSecretName: go-ks-app-com-tls
+  argoIngressName: argo-ks-ingress
+  argoHost: argo-ks.654537853.xyz
+  secretName: argo-ks-tls
+
+argocd:
+  serviceName: argocd-server
+  servicePort: 80
+
+postgresql:
+  name: postgresql-cluster
+  instances: 1
+  storageSize: '1Gi'
+  database: goals_database
+  owner: goals_user
+  port: 5432
+
+
+postgresqlSecret:
+  name: postgresql-credentials
+  secretData:
+    password: new_password
+    username: goals_user
+
+clusterSecret:
+  name: postgresql-cluster-credentials
+  credentials:
+    username: goals_user
+    password: new_password
 
 gateway:
-  name: app-gateway
-  namespace: default
-  certManagerIssuer: letsencrypt-prod
+  name: go-app-gateway
+  # namespace: default
   className: nginx
+  clusterIssuer: letsencrypt-prod
+
   listeners:
     - name: http
       port: 80
       protocol: HTTP
-      hostname: app.kubesimplify.com
+      hostname: "app.kubesimplify.com"
+
     - name: https
       port: 443
       protocol: HTTPS
-      hostname: app.kubesimplify.com
-      tlsSecret: app-kubesimplify-com-tls
+      hostname: "app.kubesimplify.com"
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: app-kubesimplify-com-tls
+            kind: Secret
+            group: ""
+
     - name: argo-http
       port: 80
       protocol: HTTP
-      hostname: argo.kubesimplify.com
+      hostname: "argo.kubesimplify.com"
+
     - name: argo-https
       port: 443
       protocol: HTTPS
-      hostname: argo.kubesimplify.com
-      tlsSecret: argo-kubesimplify-com-tls
+      hostname: "argo.kubesimplify.com"
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: argo-kubesimplify-com-tls
+            kind: Secret
+            group: ""
 
-httproute:
-  name: go-app-route
-  parentGateway: app-gateway
-  hostnames:
-    - app.kubesimplify.com
-  pathPrefix: /
-  serviceName: go-app-gateway-api-service
-  servicePort: 80
+clusterIssuer:
+  name: letsencrypt-prod
+  # LetsEncrypt production environment
+  acmeServer: https://acme-v02.api.letsencrypt.org/directory
+  # MUST be a valid email address
+  email: your-email@gmail.com
+  privateKeySecret: letsencrypt-prod
+  gateway:
+    name: go-app-gateway
+    # namespace: default

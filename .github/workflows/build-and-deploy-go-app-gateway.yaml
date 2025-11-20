@@ -56,7 +56,7 @@ jobs:
       - name: Build and Publish Image
         run: |
           cd src/
-          ko build --bare -t sha-${sha_short} --platform=linux/arm64 .
+          ko build --bare -t sha-${sha_short}  .
 
       # 7️⃣ Render Helm values.yaml from Jinja template
       - name: Render Helm values.yaml

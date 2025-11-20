@@ -2,23 +2,30 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
   name: {{ .Values.gateway.name }}
-  namespace: {{ .Values.gateway.namespace }}
+  # namespace: {{ .Values.gateway.namespace }}
   annotations:
-    cert-manager.io/cluster-issuer: {{ .Values.gateway.certManagerIssuer }}
+    cert-manager.io/cluster-issuer: {{ .Values.gateway.clusterIssuer }}
 spec:
   gatewayClassName: {{ .Values.gateway.className }}
   listeners:
-    {{- range .Values.gateway.listeners }}
-    - name: {{ .name }}
-      port: {{ .port }}
-      protocol: {{ .protocol }}
-      hostname: {{ .hostname }}
-      {{- if .tlsSecret }}
-      tls:
-        mode: Terminate
-        certificateRefs:
-          - name: {{ .tlsSecret }}
-            kind: Secret
-            group: ""
+{{- range .Values.gateway.listeners }}
+  - name: {{ .name }}
+    port: {{ .port }}
+    protocol: {{ .protocol }}
+    hostname: "{{ .hostname }}"
+    {{- if .allowedRoutes }}
+    allowedRoutes:
+      namespaces:
+        from: {{ .allowedRoutes.namespaces.from }}
+    {{- end }}
+    {{- if .tls }}
+    tls:
+      mode: {{ .tls.mode }}
+      certificateRefs:
+      {{- range .tls.certificateRefs }}
+      - name: {{ .name }}
+        kind: {{ .kind }}
+        group: "{{ .group }}"
       {{- end }}
     {{- end }}
+{{- end }}

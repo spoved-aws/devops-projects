@@ -37,7 +37,7 @@ autoscaling:
     averageValue: '350Mi'
 
 service:
-  name: go-ks-app-arm-service
+  name: go-app-gateway-api-service
   portName: http
   port: 8089
   type: ClusterIP

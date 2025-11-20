@@ -8,7 +8,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: go-ks-app-arm  # This must match the label on your service
+      app: go-app-gateway-api  # This must match the label on your service
   namespaceSelector:
     matchNames:
     - ksgo-arm  # The namespace where your service is running
