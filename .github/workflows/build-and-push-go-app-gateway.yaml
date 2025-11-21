@@ -9,9 +9,9 @@ on:
 env:
   KO_DOCKER_REPO: docker.io/kanukhosla10/go-kubesimplify
   KO_DEFAULTBASEIMAGE: alpine:3
-# Added the below evs to github env  
-#   GIT_COMMITTER_EMAIL: kanukhosla10@gmail.com
-#   GIT_COMMITTER_NAME: spoved-aws
+  # Added the below evs to github env  
+  #   GIT_COMMITTER_EMAIL: kanukhosla10@gmail.com
+  #   GIT_COMMITTER_NAME: spoved-aws
   GO_PATH: /usr/local/go/bin
   KO_PATH: /usr/local/bin
   PATH: /usr/local/go/bin:/usr/local/bin:$PATH
