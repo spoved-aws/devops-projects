@@ -2,7 +2,7 @@ name: Build & Push-go-app-gateway-api
 
 on:
   push:
-    branches: [ '≈/go-app-gateway-api' ]
+    branches: [ 'feature/go-app-gateway-api' ]
     paths:
       - 'go-app-gateway-api/**'
 
