@@ -14,4 +14,4 @@ spec:
             parentRefs:
               - kind: Gateway
                 name: {{ .Values.clusterIssuer.gateway.name }}
-                namespace: {{ .Values.clusterIssuer.gateway.namespace }}
+                # namespace: {{ .Values.clusterIssuer.gateway.namespace }}
