@@ -42,7 +42,7 @@ jobs:
         env:
           KO_DOCKER_REPO: docker.io/kanukhosla10  # Update with your Docker Hub namespace
         run: |
-          echo "${{ secrets.DOCKERHUB_TOKEN }}" | ko login docker.io --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | ko login docker.io --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
       # 5 - Get short git SHA
       - name: Get git SHA short
