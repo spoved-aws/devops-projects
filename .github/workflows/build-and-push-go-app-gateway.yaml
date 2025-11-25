@@ -73,7 +73,6 @@ jobs:
       # 9️⃣ Commit changes if any
       - name: Commit deploy manifest
         run: |
-          git add go-app-gateway-api/charts/values.yaml
           git commit -m "updated image tag to sha-${{ env.sha_short }}" || echo "No changes to commit"
 
       # 🔟 Push changes back to the same branch
