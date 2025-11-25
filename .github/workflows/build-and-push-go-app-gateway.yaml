@@ -97,5 +97,5 @@ jobs:
       - name: Push changes
         uses: ad-m/github-push-action@v0.8.0
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: feature/go-app-gateway-api
+          github_token: ${{ secrets.GH_PAT_SYNOLOGY }}
+          branch: ${{ github.ref_name }}
