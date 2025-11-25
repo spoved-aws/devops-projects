@@ -72,8 +72,8 @@ jobs:
       # 8 - Configure git for commit
       - name: Configure Git
         run: |
-          git config --local user.email "${{ env.GIT_COMMITTER_EMAIL }}"
-          git config --local user.name "${{ env.GIT_COMMITTER_NAME }}"
+          git config --local user.email "${{ vars.GIT_COMMITTER_EMAIL }}"
+          git config --local user.name "${{ vars.GIT_COMMITTER_NAME }}"
 
       # 9 - Stash unstaged changes        
       - name: Stash unstaged changes
