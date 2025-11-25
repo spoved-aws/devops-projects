@@ -21,7 +21,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: feature/go-app-gateway-api
-          persist-credentials: false
+          # persist-credentials: false
       - name: Ensure local branch
         run: |
           git checkout -B feature/go-app-gateway-api
@@ -79,10 +79,11 @@ jobs:
         run: |
           git add go-app-gateway-api/charts/values.yaml
           git commit -a -m "updated image tag to sha-${{ env.sha_short }}" || echo "No changes to commit"
+          git push origin feature/go-app-gateway-api
 
-      # 🔟 Push changes back to the same branch
-      - name: Push changes
-        uses: ad-m/github-push-action@v1.0.0
-        with:
-          github_token: ${{ secrets.GH_PAT_SYNOLOGY }}
-          branch: feature/go-app-gateway-api
+      # # 🔟 Push changes back to the same branch
+      # - name: Push changes
+      #   uses: ad-m/github-push-action@v1.0.0
+      #   with:
+      #     github_token: ${{ secrets.GH_PAT_SYNOLOGY }}
+      #     branch: feature/go-app-gateway-api
