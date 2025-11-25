@@ -63,7 +63,7 @@ jobs:
       - name: Generate deploy manifest from Jinja template
         uses: cuchi/jinja2-action@v1.1.0
         with: 
-          template: go-app-gateway-api/tmpl/deploy.j2
+          template: go-app-gateway-api/tmpl/values.j2
           output_file: go-app-gateway-api/charts/values.yaml
           strict: true
           variables: |
