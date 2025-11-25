@@ -25,6 +25,9 @@ jobs:
           fetch-depth: 0  # needed for git rev-parse
           ref: feature/go-app-gateway-api
 
+      - name: Create local branch
+        run: git checkout -B ${{ github.ref_name }}
+
       # 2 - Set up Go
       - name: Set up Go
         uses: actions/setup-go@v4
@@ -84,7 +87,7 @@ jobs:
         run: git pull origin ${{ github.ref_name }} --rebase
         
       - name: Apply stashed changes
-        run: git stash pop || echo "No stashed changes to apply"      
+        run: git stash pop || echo "No stashed changes to apply"
 
       # 9️⃣ Commit changes on local repo
       - name: Commit deploy manifest
