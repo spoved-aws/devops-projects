@@ -21,6 +21,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: feature/go-app-gateway-api
+          persist-credentials: false
       - name: Ensure local branch
         run: |
           git checkout -B feature/go-app-gateway-api
