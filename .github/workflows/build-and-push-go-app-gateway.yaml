@@ -69,6 +69,10 @@ jobs:
         run: |
           git config --local user.email "${{ vars.GIT_COMMITTER_EMAIL }}"
           git config --local user.name "${{ vars.GIT_COMMITTER_NAME }}"
+      
+      - name: Checkout Local branch
+        run: |
+          git checkout ${{ github.ref }}
 
       # 9️⃣ Commit changes if any
       - name: Commit deploy manifest
