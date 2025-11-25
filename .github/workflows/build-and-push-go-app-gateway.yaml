@@ -9,7 +9,6 @@ on:
 env:
   KO_DOCKER_REPO: docker.io/kanukhosla10/go-kubesimplify
   KO_DEFAULTBASEIMAGE: alpine:3
-  PATH: /usr/local/go/bin:/usr/local/bin:$PATH
 
 jobs:
   build-and-push:
