@@ -64,38 +64,21 @@ jobs:
           variables: |
             image_deploy_tag=sha-${{ env.sha_short }}
 
-      # 8️⃣ Configure git for commit
+      # 8️⃣ Configure git
       - name: Configure Git
         run: |
-          git config --local user.email "${{ vars.GIT_COMMITTER_EMAIL }}"
-          git config --local user.name "${{ vars.GIT_COMMITTER_NAME }}"
+          git config user.email "${{ vars.GIT_COMMITTER_EMAIL }}"
+          git config user.name "${{ vars.GIT_COMMITTER_NAME }}"
 
-      # 9️⃣ Stash any unstaged changes
-      - name: Stash unstaged changes
-        run: git stash --include-untracked
-
-      # 🔟 Pull latest changes from remote branch
-      - name: Pull latest changes
-        run: git pull origin feature/go-app-gateway-api --rebase
-
-      # 1️⃣1️⃣ Apply stashed changes
-      - name: Apply stashed changes
-        run: git stash pop || echo "No stashed changes to apply"
-
-      # 1️⃣2️⃣ Commit changes
+      # 9️⃣ Commit changes if any
       - name: Commit deploy manifest
         run: |
           git add go-app-gateway-api/charts/values.yaml
           git commit -m "updated image tag to sha-${{ env.sha_short }}" || echo "No changes to commit"
 
-      # 1️⃣3️⃣ Ensure local branch tracks remote
-      - name: Ensure branch tracks remote
-        run: git branch --set-upstream-to=origin/feature/go-app-gateway-api feature/go-app-gateway-api || git push -u origin feature/go-app-gateway-api
-
-      # 1️⃣4️⃣ Push changes
+      # 🔟 Push changes back to the same branch
       - name: Push changes
         uses: ad-m/github-push-action@v0.8.0
         with:
           github_token: ${{ secrets.GH_PAT_SYNOLOGY }}
           branch: feature/go-app-gateway-api
-          force: true
