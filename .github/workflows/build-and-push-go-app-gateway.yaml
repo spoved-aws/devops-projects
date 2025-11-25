@@ -12,8 +12,6 @@ env:
   # Added the below evs to github env  
   #   GIT_COMMITTER_EMAIL: kanukhosla10@gmail.com
   #   GIT_COMMITTER_NAME: spoved-aws
-  
-  PATH: /usr/local/go/bin:/usr/local/bin:$PATH
 
 jobs:
   build-and-push:
