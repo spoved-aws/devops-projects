@@ -51,6 +51,7 @@ jobs:
 
       # 6 - Build and push image using ko
       - name: Build and Publish Image
+        working-directory: ${{ github.workspace }}/go-app-gateway-api/src
         env:
           KO_DATA_PATH: go-app-gateway-api/src/kodata/
           KO_DOCKER_REPO: docker.io/kanukhosla10/go-kubesimplify
