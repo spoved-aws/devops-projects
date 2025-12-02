@@ -4,11 +4,11 @@ metadata:
   name: go-app-gateway-api
   namespace: argocd  # This is the ArgoCD namespace, not the target namespace
 spec:
-  project: go-apps
+  project: default
   source:
     repoURL: https://github.com/spoved-aws/devops-projects.git
     targetRevision: feature/go-app-gateway-api
-    path: charts/go-ks-app-arm  # Path to the Helm chart
+    path: go-app-gateway-api/charts  # Path to the Helm chart
 
   destination:
     server: https://kubernetes.default.svc
