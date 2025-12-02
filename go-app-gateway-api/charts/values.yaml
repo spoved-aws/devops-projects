@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: docker.io/kanukhosla10/go-kubesimplify
-  tag: sha-6d192ab
+  tag: sha-3b60db7
   pullPolicy: Always
 
 resources:
