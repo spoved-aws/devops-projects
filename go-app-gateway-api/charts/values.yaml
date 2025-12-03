@@ -132,4 +132,4 @@ clusterIssuer:
   privateKeySecret: letsencrypt-prod
   gateway:
     name: go-app-gateway
-    # namespace: default
+    namespace: go-app-gateway-api
