@@ -2,6 +2,8 @@ apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
   name: {{ .Values.clusterIssuer.name }}
+  annotations:
+    argocd.argoproj.io/tracking-id: "go-app-gateway-api:cert-manager.io/ClusterIssuer:go-app-gateway-api/letsencrypt-prod"
 spec:
   acme:
     server: {{ .Values.clusterIssuer.acmeServer }}
