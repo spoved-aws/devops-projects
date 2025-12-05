@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/spoved-aws/devops-projects.git
     targetRevision: feature/go-app-gateway-api
-    path: go-app-gateway-api/charts  # Path to the Helm chart
+    path: apps/go-app-gateway-api/charts  # Path to the Helm chart
 
   destination:
     server: https://kubernetes.default.svc

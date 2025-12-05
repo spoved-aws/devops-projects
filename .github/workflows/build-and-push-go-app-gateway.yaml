@@ -4,7 +4,7 @@ on:
   push:
     branches: [ 'feature/go-app-gateway-api' ]
     paths:
-      - 'go-app-gateway-api/src/**'
+      - 'apps/apps/go-app-gateway-api/src/**'
 
 env:
   KO_DOCKER_REPO: docker.io/kanukhosla10/go-kubesimplify
@@ -50,7 +50,7 @@ jobs:
 
       # 6️⃣ Build and push image using ko
       - name: Build and Publish Image
-        working-directory: go-app-gateway-api/src
+        working-directory: apps/go-app-gateway-api/src
         env:
           KO_DATA_PATH: kodata/
           KO_DOCKER_REPO: docker.io/kanukhosla10/go-kubesimplify
@@ -62,8 +62,8 @@ jobs:
       - name: Generate deploy manifest from Jinja template
         uses: cuchi/jinja2-action@v1.1.0
         with: 
-          template: go-app-gateway-api/tmpl/values.j2
-          output_file: go-app-gateway-api/charts/values.yaml
+          template: apps/go-app-gateway-api/tmpl/values.j2
+          output_file: apps/go-app-gateway-api/charts/values.yaml
           strict: true
           variables: |
             image_deploy_tag=sha-${{ env.sha_short }}
@@ -77,7 +77,7 @@ jobs:
       # 9️⃣ Commit changes if any
       - name: Commit deploy manifest
         run: |
-          git add go-app-gateway-api/charts/values.yaml
+          git add apps/go-app-gateway-api/charts/values.yaml
           git commit -a -m "updated image tag to sha-${{ env.sha_short }}" || echo "No changes to commit"
           git push origin feature/go-app-gateway-api
 

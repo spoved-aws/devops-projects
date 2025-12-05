@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: docker.io/kanukhosla10/go-kubesimplify
-  tag: sha-2684316
+  tag: sha-9cdf76a
   pullPolicy: Always
 
 resources:
@@ -132,4 +132,4 @@ clusterIssuer:
   privateKeySecret: letsencrypt-prod
   gateway:
     name: go-app-gateway
-    # namespace: default
+    namespace: go-app-gateway-api
