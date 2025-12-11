@@ -1,0 +1,170 @@
+---
+# Source: go-app-gateway-api/templates/postgres_cluster_secrets.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgresql-cluster-credentials
+type: Opaque
+stringData:
+  password: new_password
+  username: goals_user
+---
+# Source: go-app-gateway-api/templates/postgres_secrets.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgresql-credentials
+type: Opaque
+stringData:
+  password: new_password
+  username: goals_user
+---
+# Source: go-app-gateway-api/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: go-app-gateway-api-service
+  # namespace: 
+  labels:
+    app: go-app-gateway-api
+  
+    helm.sh/chart: go-app-gateway-api-0.1.0
+    app.kubernetes.io/name: go-app-gateway-api
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  selector:
+    app: go-app-gateway-api
+  
+    app.kubernetes.io/name: go-app-gateway-api
+    app.kubernetes.io/instance: release-name
+  ports:
+    - protocol: TCP
+      name: http
+      port: 8089
+      targetPort: 8080
+  type: ClusterIP
+---
+# Source: go-app-gateway-api/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: release-name-go-app-gateway-api
+  # namespace: 
+  labels:
+    app: go-app-gateway-api
+  
+    helm.sh/chart: go-app-gateway-api-0.1.0
+    app.kubernetes.io/name: go-app-gateway-api
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: go-app-gateway-api
+    
+      app.kubernetes.io/name: go-app-gateway-api
+      app.kubernetes.io/instance: release-name
+  template:
+    metadata:
+      labels:
+        app: go-app-gateway-api
+      
+        app.kubernetes.io/name: go-app-gateway-api
+        app.kubernetes.io/instance: release-name
+    spec:
+      containers:
+        - name: go-app-gateway-api
+          image: "docker.io/kanukhosla10/go-kubesimplify:sha-9cdf76a"
+          imagePullPolicy: Always
+          env:
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-credentials
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-credentials
+                  key: password
+            - name: DB_HOST
+              value: "postgresql-cluster-rw"
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_NAME
+              value: "goals_database"
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              memory: 350Mi
+              cpu: 250m
+            limits:
+              memory: 500Mi
+              cpu: 500m
+---
+# Source: go-app-gateway-api/templates/certificate.yaml
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: go-app-gateway-api-homecluster-io
+spec:
+  secretName: go-app-gateway-api-homecluster-io-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+    - go-app-gateway-api.homecluster.io
+---
+# Source: go-app-gateway-api/templates/postgres_cluster.yaml
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgresql-cluster
+  # namespace: 
+spec:
+  instances: 1
+  storage:
+    size: 1Gi
+  bootstrap:
+    initdb:
+      database: goals_database
+      owner: goals_user
+      secret:
+        name: postgresql-cluster-credentials
+---
+# Source: go-app-gateway-api/templates/http-route.yaml
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: go-app-gateway-api-route
+spec:
+  parentRefs:
+  - name: homecluster-gateway
+    namespace: default
+  hostnames:
+  - "go-app-gateway-api.homecluster.io"
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: go-app-gateway-api-service
+      port: 8089

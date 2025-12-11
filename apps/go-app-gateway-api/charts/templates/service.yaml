@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.service.name }}
+  name: {{ .Chart.Name }}-service
   # namespace: {{ .Values.namespace }}
   labels:
     app: {{ include "go-app-gateway-api.name" . }}

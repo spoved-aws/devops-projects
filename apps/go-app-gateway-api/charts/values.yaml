@@ -37,7 +37,7 @@ autoscaling:
     averageValue: '350Mi'
 
 service:
-  name: go-ks-app-arm-service
+  name: go-app-gateway-api-service
   portName: http
   port: 8089
   type: ClusterIP
@@ -123,13 +123,14 @@ gateway:
             kind: Secret
             group: ""
 
-clusterIssuer:
-  name: letsencrypt-prod
-  # LetsEncrypt production environment
-  acmeServer: https://acme-v02.api.letsencrypt.org/directory
-  # MUST be a valid email address
-  email: kanukhosla10@gmail.com
-  privateKeySecret: letsencrypt-prod
-  gateway:
-    name: go-app-gateway
-    namespace: go-app-gateway-api
+# moved to infra/cert-manager/cluster_issuer.yaml
+# clusterIssuer:
+#   name: letsencrypt-prod
+#   # LetsEncrypt production environment
+#   acmeServer: https://acme-v02.api.letsencrypt.org/directory
+#   # MUST be a valid email address
+#   email: kanukhosla10@gmail.com
+#   privateKeySecret: letsencrypt-prod
+#   gateway:
+#     name: go-app-gateway
+#     namespace: go-app-gateway-api

@@ -1,0 +1,32 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: homecluster-gateway
+  namespace: platform
+spec:
+  gatewayClassName: nginx
+
+  listeners:
+  # Wildcard HTTP listener
+  - name: http
+    port: 80
+    protocol: HTTP
+    allowedRoutes:
+      namespaces:
+        from: All
+
+  # Wildcard HTTPS listener
+  - name: https
+    port: 443
+    protocol: HTTPS
+    allowedRoutes:
+      namespaces:
+        from: All
+    tls:
+      mode: Terminate
+      certificateRefs:
+        # Shared certs
+        - name: argo-homecluster-io-tls
+        # App-specific certs; they will exist once apps install them
+        - name: go-app-gateway-api-homecluster-io-tls
+        # - name: app2-kubesimplify-com-tls
