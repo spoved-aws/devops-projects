@@ -7,14 +7,6 @@ spec:
   gatewayClassName: nginx
 
   listeners:
-  # HTTP listener (wildcard)
-  # - name: http
-  #   hostname: "*.654537853.xyz"
-  #   port: 80
-  #   protocol: HTTP
-  #   allowedRoutes:
-  #     namespaces:
-  #       from: All
   # HTTP listener for ArgoCD
   - name: argo-http
     port: 80
@@ -36,15 +28,20 @@ spec:
           kind: Secret
           group: ""
 
-  # HTTPS listener for App1
-  # - name: https-goapp
-  #   hostname: "go-app-gateway-api.654537853.xyz"
-  #   port: 443
-  #   protocol: HTTPS
-  #   allowedRoutes:
-  #     namespaces:
-  #       from: All
-  #   tls:
-  #     mode: Terminate
-  #     certificateRefs:
-  #       - name: go-app-gateway-api-654537853-xyz-tls
+   # HTTP listener for the Apps
+  - name: apps-http
+    port: 80
+    protocol: HTTP
+    hostname: "*.654537853.xyz"
+    allowedRoutes:
+      namespaces:
+        from: All
+  # HTTPS listener for the Apps
+  - name: apps-https
+    port: 443
+    protocol: HTTPS
+    hostname: "*.654537853.xyz"
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: apps-654537853-xyz-tls

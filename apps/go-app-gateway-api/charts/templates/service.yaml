@@ -14,5 +14,5 @@ spec:
     - protocol: TCP
       name: {{ .Values.service.portName }}
       port: {{ .Values.service.port }}
-      targetPort: {{ .Values.containerPort }}
+      targetPort: {{ .Values.service.containerPort }}
   type: {{ .Values.service.type }}

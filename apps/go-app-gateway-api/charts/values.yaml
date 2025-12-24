@@ -22,6 +22,7 @@ probes:
     periodSeconds: 20
 
 containerPort: 8080
+
 readinessProbe:
   port: 8080
 livenessProbe:
@@ -41,6 +42,7 @@ service:
   portName: http
   port: 8089
   type: ClusterIP
+  containerPort: 8080
 
 ingress:
   entrypoints: websecure
@@ -77,60 +79,3 @@ clusterSecret:
   credentials:
     username: goals_user
     password: new_password
-
-gateway:
-  name: go-app-gateway
-  # namespace: default
-  className: nginx
-  clusterIssuer: letsencrypt-prod
-
-  listeners:
-    - name: http
-      port: 80
-      protocol: HTTP
-      hostname: "go-app-gateway-api.654537853.xyz"
-
-    - name: https
-      port: 443
-      protocol: HTTPS
-      hostname: "go-app-gateway-api.654537853.xyz"
-      allowedRoutes:
-        namespaces:
-          from: All
-      tls:
-        mode: Terminate
-        certificateRefs:
-          - name: go-app-gateway-api-654537853-xyz-tls
-            kind: Secret
-            group: ""
-
-    - name: argo-http
-      port: 80
-      protocol: HTTP
-      hostname: "argo.654537853.xyz"
-
-    - name: argo-https
-      port: 443
-      protocol: HTTPS
-      hostname: "argo.654537853.xyz"
-      allowedRoutes:
-        namespaces:
-          from: All
-      tls:
-        mode: Terminate
-        certificateRefs:
-          - name: argo-654537853-xyz-tls
-            kind: Secret
-            group: ""
-
-# moved to infra/cert-manager/cluster_issuer.yaml
-# clusterIssuer:
-#   name: letsencrypt-prod
-#   # LetsEncrypt production environment
-#   acmeServer: https://acme-v02.api.letsencrypt.org/directory
-#   # MUST be a valid email address
-#   email: kanukhosla10@gmail.com
-#   privateKeySecret: letsencrypt-prod
-#   gateway:
-#     name: go-app-gateway
-#     namespace: go-app-gateway-api
