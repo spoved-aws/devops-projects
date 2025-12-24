@@ -5,7 +5,6 @@ metadata:
 spec:
   parentRefs:
   - name: homecluster-gateway
-    namespace: default
   hostnames:
   - "go-app-gateway-api.654537853.xyz"
   rules:
