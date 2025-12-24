@@ -5,6 +5,7 @@ metadata:
 spec:
   parentRefs:
   - name: homecluster-gateway
+    namespace: nginx-gateway
   hostnames:
   - "go-app-gateway-api.654537853.xyz"
   rules:

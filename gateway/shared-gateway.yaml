@@ -40,7 +40,10 @@ spec:
   - name: apps-https
     port: 443
     protocol: HTTPS
-    hostname: "*.654537853.xyz"
+    hostname: "go-app-gateway-api.654537853.xyz"
+    allowedRoutes:
+      namespaces:
+        from: All
     tls:
       mode: Terminate
       certificateRefs:

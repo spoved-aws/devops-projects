@@ -9,4 +9,4 @@ spec:
     name: letsencrypt-cloudflare
     kind: ClusterIssuer
   dnsNames:
-    - apps.654537853.xyz
+    - "*.654537853.xyz"
