@@ -47,10 +47,10 @@ ingress:
   tlsEnabled: "true"
   clusterIssuer: letsencrypt-prod
   ingresssApp: go-ks-traefik
-  appHost: go-ks.homecluster.io
+  appHost: go-ks.654537853.xyz
   appSecretName: go-ks-app-com-tls
   argoIngressName: argo-ks-ingress
-  argoHost: argo-ks.homecluster.io
+  argoHost: argo-ks.654537853.xyz
   secretName: argo-ks-tls
 
 argocd:
@@ -88,38 +88,38 @@ gateway:
     - name: http
       port: 80
       protocol: HTTP
-      hostname: "go-app-gateway-api.homecluster.io"
+      hostname: "go-app-gateway-api.654537853.xyz"
 
     - name: https
       port: 443
       protocol: HTTPS
-      hostname: "go-app-gateway-api.homecluster.io"
+      hostname: "go-app-gateway-api.654537853.xyz"
       allowedRoutes:
         namespaces:
           from: All
       tls:
         mode: Terminate
         certificateRefs:
-          - name: go-app-gateway-api-homecluster-io-tls
+          - name: go-app-gateway-api-654537853-xyz-tls
             kind: Secret
             group: ""
 
     - name: argo-http
       port: 80
       protocol: HTTP
-      hostname: "argo.homecluster.io"
+      hostname: "argo.654537853.xyz"
 
     - name: argo-https
       port: 443
       protocol: HTTPS
-      hostname: "argo.homecluster.io"
+      hostname: "argo.654537853.xyz"
       allowedRoutes:
         namespaces:
           from: All
       tls:
         mode: Terminate
         certificateRefs:
-          - name: argo-homecluster-io-tls
+          - name: argo-654537853-xyz-tls
             kind: Secret
             group: ""
 

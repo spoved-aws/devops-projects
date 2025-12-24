@@ -7,7 +7,7 @@ spec:
   - name: homecluster-gateway
     namespace: default
   hostnames:
-  - "go-app-gateway-api.homecluster.io"
+  - "go-app-gateway-api.654537853.xyz"
   rules:
   - matches:
     - path:

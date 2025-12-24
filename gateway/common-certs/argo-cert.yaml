@@ -1,12 +1,12 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: argo-homecluster-io
-  namespace: platform
+  name: argo-654537853-xyz
+  namespace: nginx-gateway
 spec:
-  secretName: argo-homecluster-io-tls
+  secretName: argo-654537853-xyz-tls
   issuerRef:
-    name: letsencrypt-prod
+    name: letsencrypt-cloudflare
     kind: ClusterIssuer
   dnsNames:
-    - argo.homecluster.io
+    - argo.654537853.xyz

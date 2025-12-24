@@ -2,21 +2,28 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
   name: homecluster-gateway
-  namespace: platform
+  namespace: nginx-gateway
 spec:
   gatewayClassName: nginx
 
   listeners:
-  # Wildcard HTTP listener
-  - name: http
+  # HTTP listener (wildcard)
+  # - name: http
+  #   hostname: "*.654537853.xyz"
+  #   port: 80
+  #   protocol: HTTP
+  #   allowedRoutes:
+  #     namespaces:
+  #       from: All
+  # HTTP listener for ArgoCD
+  - name: argo-http
     port: 80
     protocol: HTTP
-    allowedRoutes:
-      namespaces:
-        from: All
+    hostname: "argo.654537853.xyz"
 
-  # Wildcard HTTPS listener
-  - name: https
+  # HTTPS listener for ArgoCD
+  - name: https-argo
+    hostname: "argo.654537853.xyz"
     port: 443
     protocol: HTTPS
     allowedRoutes:
@@ -25,8 +32,19 @@ spec:
     tls:
       mode: Terminate
       certificateRefs:
-        # Shared certs
-        - name: argo-homecluster-io-tls
-        # App-specific certs; they will exist once apps install them
-        - name: go-app-gateway-api-homecluster-io-tls
-        # - name: app2-kubesimplify-com-tls
+        - name: argo-654537853-xyz-tls  # this secret will be created by cert-manager
+          kind: Secret
+          group: ""
+
+  # HTTPS listener for App1
+  # - name: https-goapp
+  #   hostname: "go-app-gateway-api.654537853.xyz"
+  #   port: 443
+  #   protocol: HTTPS
+  #   allowedRoutes:
+  #     namespaces:
+  #       from: All
+  #   tls:
+  #     mode: Terminate
+  #     certificateRefs:
+  #       - name: go-app-gateway-api-654537853-xyz-tls
