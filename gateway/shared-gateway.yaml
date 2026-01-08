@@ -36,15 +36,15 @@ spec:
     allowedRoutes:
       namespaces:
         from: All
-  # HTTPS listener for the Apps
+    # HTTPS for ALL apps
   - name: apps-https
     port: 443
     protocol: HTTPS
-    hostname: "go-app-gateway-api.654537853.xyz"
+    hostname: "*.654537853.xyz"
     allowedRoutes:
       namespaces:
         from: All
     tls:
       mode: Terminate
       certificateRefs:
-      - name: apps-654537853-xyz-tls
+        - name: apps-654537853-xyz-tls
