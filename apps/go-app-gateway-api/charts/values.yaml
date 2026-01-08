@@ -1,5 +1,6 @@
 replicaCount: 1
 
+targetNamespace: go-app-gateway-api
 image:
   repository: docker.io/kanukhosla10/go-kubesimplify
   tag: sha-9cdf76a
@@ -29,7 +30,6 @@ livenessProbe:
   port: 8080
 
 autoscaling:
-  hpaName: go-ks-app-hpa
   minReplicas: 1
   maxReplicas: 10
   cpu:

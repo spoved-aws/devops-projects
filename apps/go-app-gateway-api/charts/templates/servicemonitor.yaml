@@ -1,17 +1,17 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: goks-arm-service-monitor
+  name: {{ .Chart.Name }}-service-monitor
   namespace: monitoring  # Ensure this is in the namespace where Prometheus is running
   labels:
     release: kube-prometheus-stack
 spec:
   selector:
     matchLabels:
-      app: go-app-gateway-api  # This must match the label on your service
+      app: {{ .Chart.Name }}  # This must match the label on your service
   namespaceSelector:
     matchNames:
-    - ksgo-arm  # The namespace where your service is running
+    - {{ .Values.targetNamespace }} # The namespace where your service is running
   endpoints:
   - port: "http"  # Port where the service is exposing metrics (as a string)
     path: /metrics  # The path where your application exposes Prometheus metrics

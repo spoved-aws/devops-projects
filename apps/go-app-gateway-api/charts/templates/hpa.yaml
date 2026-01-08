@@ -1,8 +1,7 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ .Values.autoscaling.hpaName }}
-  # namespace: {{ .Values.namespace }}
+  name: {{ .Chart.Name }}-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
