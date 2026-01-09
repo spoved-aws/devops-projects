@@ -1,6 +1,7 @@
 replicaCount: 1
 
-targetNamespace: go-app-gateway-api
+appNamespace: go-app-gateway-api
+
 image:
   repository: docker.io/kanukhosla10/go-kubesimplify
   tag: sha-9cdf76a
@@ -44,16 +45,6 @@ service:
   type: ClusterIP
   containerPort: 8080
 
-ingress:
-  entrypoints: websecure
-  tlsEnabled: "true"
-  clusterIssuer: letsencrypt-prod
-  ingresssApp: go-ks-traefik
-  appHost: go-ks.654537853.xyz
-  appSecretName: go-ks-app-com-tls
-  argoIngressName: argo-ks-ingress
-  argoHost: argo-ks.654537853.xyz
-  secretName: argo-ks-tls
 
 argocd:
   serviceName: argocd-server

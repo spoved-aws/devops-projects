@@ -11,7 +11,7 @@ spec:
       app: {{ .Chart.Name }}  # This must match the label on your service
   namespaceSelector:
     matchNames:
-    - {{ .Values.targetNamespace }} # The namespace where your service is running
+    - {{ .Values.appNamespace }} # The namespace where your service is running
   endpoints:
   - port: "http"  # Port where the service is exposing metrics (as a string)
     path: /metrics  # The path where your application exposes Prometheus metrics
