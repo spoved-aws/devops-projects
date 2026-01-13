@@ -4,7 +4,7 @@ on:
   push:
     branches: [ 'feature/go-app-gateway-api' ]
     paths:
-      - 'apps/apps/go-app-gateway-api/src/**'
+      - 'apps/go-app-gateway-api/src/**'
 
 env:
   KO_DOCKER_REPO: docker.io/kanukhosla10/go-kubesimplify
