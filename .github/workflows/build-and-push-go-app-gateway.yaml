@@ -79,6 +79,8 @@ jobs:
         run: |
           git add apps/go-app-gateway-api/charts/values.yaml
           git commit -a -m "updated image tag to sha-${{ env.sha_short }}" || echo "No changes to commit"
+
+          git pull --rebase origin feature/go-app-gateway-api
           git push origin feature/go-app-gateway-api
 
       # # 🔟 Push changes back to the same branch
