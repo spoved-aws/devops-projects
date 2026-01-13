@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: prom-654537853-xyz
+  namespace: nginx-gateway
+spec:
+  secretName: prom-654537853-xyz-tls
+  issuerRef:
+    name: letsencrypt-cloudflare
+    kind: ClusterIssuer
+  dnsNames:
+    - prom.654537853.xyz
