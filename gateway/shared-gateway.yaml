@@ -1,0 +1,93 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: homecluster-gateway
+  namespace: nginx-gateway
+spec:
+  gatewayClassName: nginx
+
+  listeners:
+  # HTTP listener for ArgoCD
+  - name: argo-http
+    port: 80
+    protocol: HTTP
+    hostname: "argo.654537853.xyz"
+
+  # HTTPS listener for ArgoCD
+  - name: https-argo
+    hostname: "argo.654537853.xyz"
+    port: 443
+    protocol: HTTPS
+    allowedRoutes:
+      namespaces:
+        from: All
+    tls:
+      mode: Terminate
+      certificateRefs:
+        - name: argo-654537853-xyz-tls  # this secret will be created by cert-manager
+          kind: Secret
+          group: ""
+
+  # HTTP listener for Grafana
+  - name: http-grafana
+    port: 80
+    protocol: HTTP
+    hostname: "grafana.654537853.xyz"
+
+  # HTTPS listener for grafana
+  - name: https-grafana
+    hostname: "grafana.654537853.xyz"
+    port: 443
+    protocol: HTTPS
+    allowedRoutes:
+      namespaces:
+        from: All
+    tls:
+      mode: Terminate
+      certificateRefs:
+        - name: grafana-654537853-xyz-tls  # this secret will be created by cert-manager
+          kind: Secret
+          group: ""
+
+  # HTTP listener for prometheus
+  - name: http-prom
+    port: 80
+    protocol: HTTP
+    hostname: "prom.654537853.xyz"
+
+  # HTTPS listener for ArgoCD
+  - name: https-prom
+    hostname: "prom.654537853.xyz"
+    port: 443
+    protocol: HTTPS
+    allowedRoutes:
+      namespaces:
+        from: All
+    tls:
+      mode: Terminate
+      certificateRefs:
+        - name: prom-654537853-xyz-tls  # this secret will be created by cert-manager
+          kind: Secret
+          group: ""
+
+
+   # HTTP listener for the Apps
+  - name: apps-http
+    port: 80
+    protocol: HTTP
+    hostname: "*.654537853.xyz"
+    allowedRoutes:
+      namespaces:
+        from: All
+    # HTTPS for ALL apps
+  - name: apps-https
+    port: 443
+    protocol: HTTPS
+    hostname: "*.654537853.xyz"
+    allowedRoutes:
+      namespaces:
+        from: All
+    tls:
+      mode: Terminate
+      certificateRefs:
+        - name: apps-654537853-xyz-tls

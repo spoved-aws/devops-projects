@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: grafana-654537853-xyz
+  namespace: nginx-gateway
+spec:
+  secretName: grafana-654537853-xyz-tls
+  issuerRef:
+    name: letsencrypt-cloudflare
+    kind: ClusterIssuer
+  dnsNames:
+    - grafana.654537853.xyz

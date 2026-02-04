@@ -1,0 +1,15 @@
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: grafana-refgrant
+  namespace: monitoring  # the namespace of the service
+spec:
+  from:
+  - group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    namespace: nginx-gateway   # namespace of the Gateway
+    #name: homecluster-gateway
+  to:
+  - group: ""       # core API group
+    kind: Service
+    name: kube-prometheus-stack-grafana

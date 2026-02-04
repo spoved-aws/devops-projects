@@ -1,0 +1,91 @@
+name: Build & Push-go-app-gateway-api
+
+on:
+  push:
+    branches: [ 'feature/go-app-gateway-api' ]
+    paths:
+      - 'apps/go-app-gateway-api/src/**'
+
+env:
+  KO_DOCKER_REPO: docker.io/kanukhosla10/go-kubesimplify
+  KO_DEFAULTBASEIMAGE: alpine:3
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout the repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: feature/go-app-gateway-api
+          # persist-credentials: false
+      - name: Ensure local branch
+        run: |
+          git checkout -B feature/go-app-gateway-api
+
+      # 2️⃣ Set up Go
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.22.5'
+
+      # 3️⃣ Set up ko
+      - name: Set up ko
+        uses: ko-build/setup-ko@v0.6
+        with:
+          version: v0.14.1
+
+      # 4️⃣ Log in to Docker Hub
+      - name: Log in to Docker Hub
+        run: |
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | ko login docker.io --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+
+      # 5️⃣ Get short git SHA
+      - name: Get git SHA short
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      # 6️⃣ Build and push image using ko
+      - name: Build and Publish Image
+        working-directory: apps/go-app-gateway-api/src
+        env:
+          KO_DATA_PATH: kodata/
+          KO_DOCKER_REPO: docker.io/kanukhosla10/go-kubesimplify
+          KO_DEFAULTBASEIMAGE: alpine:3
+        run: |
+          ko build --bare -t sha-${{ env.sha_short }}
+
+      # 7️⃣ Render Helm values.yaml from Jinja template
+      - name: Generate deploy manifest from Jinja template
+        uses: cuchi/jinja2-action@v1.1.0
+        with: 
+          template: apps/go-app-gateway-api/tmpl/values.j2
+          output_file: apps/go-app-gateway-api/charts/values.yaml
+          strict: true
+          variables: |
+            image_deploy_tag=sha-${{ env.sha_short }}
+
+      # 8️⃣ Configure git
+      - name: Configure Git
+        run: |
+          git config --local user.email "${{ vars.GIT_COMMITTER_EMAIL }}"
+          git config --local user.name "${{ vars.GIT_COMMITTER_NAME }}"
+
+      # 9️⃣ Commit changes if any
+      - name: Commit deploy manifest
+        run: |
+          git add apps/go-app-gateway-api/charts/values.yaml
+          git commit -a -m "updated image tag to sha-${{ env.sha_short }}" || echo "No changes to commit"
+
+          git pull --rebase origin feature/go-app-gateway-api
+          git push origin feature/go-app-gateway-api
+
+      # # 🔟 Push changes back to the same branch
+      # - name: Push changes
+      #   uses: ad-m/github-push-action@v1.0.0
+      #   with:
+      #     github_token: ${{ secrets.GH_PAT_SYNOLOGY }}
+      #     branch: feature/go-app-gateway-api
