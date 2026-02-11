@@ -4,7 +4,7 @@ on:
   push:
     branches: [ 'feature/two-tier-flask-app' ]
     paths:
-      - 'apps/two-tier-flask-app/**'
+      - 'apps/two-tier-flask-app/src/**'
 
 jobs:
   build-and-push:

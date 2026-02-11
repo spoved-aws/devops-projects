@@ -15,12 +15,9 @@ spec:
   {{- end }}
   rules:
     {{- range .Values.httpRoute.rules }}
-    {{- with .matches }}
     - matches:
-      {{- toYaml . | nindent 8 }}
-    {{- end }}
+        {{- toYaml .matches | nindent 6 }}
       backendRefs:
         - name: {{ include "two-tier-flask-app.fullname" . }}
-          port: {{ Values.appService.containerPort }}
+          port: 5000   # hardcoded for now
     {{- end }}
-{{- end }}
