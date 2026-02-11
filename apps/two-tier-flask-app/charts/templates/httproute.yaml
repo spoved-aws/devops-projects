@@ -1,10 +1,7 @@
-{{- if .Values.httpRoute.enabled -}}
-{{- $fullName := include "two-tier-flask-app.fullname" . -}}
-{{- $svcPort := .Values.appService.containerPort -}}
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: {{ $fullName }}-route
+  name: {{ .Chart.Name }}-route
   labels:
     {{- include "two-tier-flask-app.labels" . | nindent 4 }}
 spec:
@@ -24,6 +21,6 @@ spec:
     {{- end }}
       backendRefs:
         - name: {{ include "two-tier-flask-app.fullname" . }}
-          port: {{ $svcPort }}
+          port: {{ Values.appService.containerPort }}
     {{- end }}
 {{- end }}
