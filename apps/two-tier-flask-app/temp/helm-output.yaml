@@ -1,0 +1,144 @@
+---
+# Source: two-tier-flask-app/templates/app-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-release-two-tier-flask-app
+  labels:
+    helm.sh/chart: two-tier-flask-app-0.1.0
+    app.kubernetes.io/name: two-tier-flask-app
+    app.kubernetes.io/instance: test-release
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5000
+      targetPort: 5000
+  selector:
+    app.kubernetes.io/name: two-tier-flask-app
+    app.kubernetes.io/instance: test-release
+---
+# Source: two-tier-flask-app/templates/db_service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-release-two-tier-flask-app-mysql
+  labels:
+    helm.sh/chart: two-tier-flask-app-0.1.0
+    app.kubernetes.io/name: two-tier-flask-app
+    app.kubernetes.io/instance: test-release
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 3306
+      name: mysql
+  selector:
+    app.kubernetes.io/name: two-tier-flask-app
+    app.kubernetes.io/instance: test-release
+---
+# Source: two-tier-flask-app/templates/app-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-release-two-tier-flask-app
+  labels:
+    helm.sh/chart: two-tier-flask-app-0.1.0
+    app.kubernetes.io/name: two-tier-flask-app
+    app.kubernetes.io/instance: test-release
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: two-tier-flask-app
+      app.kubernetes.io/instance: test-release
+  template:
+    metadata:
+      labels:
+        helm.sh/chart: two-tier-flask-app-0.1.0
+        app.kubernetes.io/name: two-tier-flask-app
+        app.kubernetes.io/instance: test-release
+        app.kubernetes.io/version: "1.16.0"
+        app.kubernetes.io/managed-by: Helm
+    spec:
+      containers:
+        - name: two-tier-flask-app
+          image: "kanukhosla10/two-tier-flask-app:latest"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MYSQL_HOST
+              value: mysql
+            - name: MYSQL_USER
+              value: root
+            - name: MYSQL_PASSWORD
+              value: root
+            - name: MYSQL_DB
+              value: devops
+          ports:
+              containerPort:
+          readinessProbe:
+            failureThreshold: 5
+            httpGet:
+              path: /health
+              port: 5000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+---
+# Source: two-tier-flask-app/templates/db-replicasets.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: two-tier-flask-app-mysql
+  labels:
+    helm.sh/chart: two-tier-flask-app-0.1.0
+    app.kubernetes.io/name: two-tier-flask-app
+    app.kubernetes.io/instance: test-release
+    app.kubernetes.io/version: "1.16.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  serviceName: two-tier-flask-app-mysql
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: two-tier-flask-app
+      app.kubernetes.io/instance: test-release
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: two-tier-flask-app
+        app.kubernetes.io/instance: test-release
+    spec:
+      containers:
+        - name: mysql-flask
+          image: mysql:8.1
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "root"
+            - name: MYSQL_DATABASE
+              value: "devops"
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+          readinessProbe:
+            exec:
+              command:
+                - mysqladmin
+                - ping
+                - -h
+                - localhost
+                - -uroot
+                - -proot
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 5
+      volumes:
+        - name: mysql-data
+          emptyDir: {}

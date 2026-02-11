@@ -1,0 +1,71 @@
+name: Build & Push-two-tier-flask-app
+
+on:
+  push:
+    branches: [ 'feature/two-tier-flask-app' ]
+    paths:
+      - 'apps/two-tier-flask-app/src/**'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1 Checkout the repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: feature/two-tier-flask-app
+          # persist-credentials: false
+      - name: Ensure local branch
+        run: |
+          git checkout -B feature/two-tier-flask-app
+
+      # 2 Log in to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # 3 Get short git SHA
+      - name: Get git SHA short
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      # 4 Build and push image
+      - name: Build and Publish Image
+        uses: docker/build-push-action@v5
+        with:
+          context: apps/two-tier-flask-app
+          file: apps/two-tier-flask-app/Dockerfile
+          push: true
+          tags: |
+            kanukhosla10/two-tier-flask-app:latest
+            kanukhosla10/two-tier-flask-app:${{ env.sha_short  }}
+
+      # 5 Render Helm values.yaml from Jinja template
+      # - name: Generate deploy manifest from Jinja template
+      #   uses: cuchi/jinja2-action@v1.1.0
+      #   with: 
+      #     template: apps/two-tier-flask-app/tmpl/values.j2
+      #     output_file: apps/two-tier-flask-app/charts/values.yaml
+      #     strict: true
+      #     variables: |
+      #       image_deploy_tag=sha-${{ env.sha_short }}
+
+      # 6 Configure git
+      - name: Configure Git
+        run: |
+          git config --local user.email "${{ vars.GIT_COMMITTER_EMAIL }}"
+          git config --local user.name "${{ vars.GIT_COMMITTER_NAME }}"
+
+      # 7 Commit changes if any
+      - name: Commit deploy manifest
+        run: |
+          git add apps/two-tier-flask-app/charts/values.yaml
+          git commit -a -m "updated image tag to sha-${{ env.sha_short }}" || echo "No changes to commit"
+
+          git pull --rebase origin feature/two-tier-flask-app
+          git push origin feature/two-tier-flask-app
