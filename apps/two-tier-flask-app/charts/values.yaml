@@ -69,3 +69,6 @@ volumeMounts:
 
 fullnameOverride: ""
 nameOverride: ""
+
+autoscaling:
+  enabled: false
