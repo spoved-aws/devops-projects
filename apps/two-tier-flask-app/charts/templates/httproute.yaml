@@ -14,10 +14,11 @@ spec:
     {{- toYaml . | nindent 4 }}
   {{- end }}
   rules:
+    {{- $root := . }}
     {{- range .Values.httpRoute.rules }}
     - matches:
         {{- toYaml .matches | nindent 6 }}
       backendRefs:
-        - name: {{ include "two-tier-flask-app.fullname" . }}
+        - name: {{ include "two-tier-flask-app.fullname" $root }}
           port: 5000   # hardcoded for now
     {{- end }}

@@ -64,6 +64,5 @@ volumeMounts:
   mountPath: "/var/lib/mysql"
   readOnly: true
 
-
 fullnameOverride: ""
 nameOverride: ""
