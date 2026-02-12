@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "two-tier-flask-app.selectorLabels.mysql" . | nindent 4 }}
 spec:
-  type: {{ .Values.dbService.type }}
+  clusterIP: None
   ports:
     - port: {{ .Values.dbService.containerPort }}
       targetPort: {{ .Values.dbService.containerPort }}

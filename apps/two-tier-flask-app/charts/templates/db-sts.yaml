@@ -3,17 +3,17 @@ kind: StatefulSet
 metadata:
   name: {{ include "two-tier-flask-app.name" . }}-mysql
   labels:
-    {{- include "two-tier-flask-app.labels" . | nindent 4 }}-mysql
+    {{- include "two-tier-flask-app.selectorLabels.mysql" . | nindent 4 }}
 spec:
   serviceName: {{ include "two-tier-flask-app.name" . }}-mysql
   replicas: {{ .Values.mysql.replicaCount }}
   selector:
     matchLabels:
-      {{- include "two-tier-flask-app.selectorLabels" . | nindent 6 }}-mysql
+      {{- include "two-tier-flask-app.selectorLabels.mysql" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "two-tier-flask-app.selectorLabels" . | nindent 8 }}-mysql
+        {{- include "two-tier-flask-app.selectorLabels.mysql" . | nindent 8 }}
     spec:
       containers:
         - name: {{ .Values.mysql.name }}
@@ -41,6 +41,11 @@ spec:
             periodSeconds: 10
             timeoutSeconds: 5
             failureThreshold: 5
-      volumes:
-        - name: {{ .Values.volumeMounts.name }}
-          emptyDir: {}
+  volumeClaimTemplates:
+    - metadata:
+        name: {{ .Values.volumeMounts.name }}
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
