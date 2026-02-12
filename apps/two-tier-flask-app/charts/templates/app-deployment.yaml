@@ -30,7 +30,7 @@ spec:
           env:
           {{- toYaml .Values.env | nindent 12 }}
           ports:
-              containerPort: {{ .Values.appService.containerPort }}
+            - containerPort: {{ .Values.appService.containerPort }}
           {{- with .Values.readinessProbe }}
           readinessProbe:
             {{- toYaml . | nindent 12 }}
