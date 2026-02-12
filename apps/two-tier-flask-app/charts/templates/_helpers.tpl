@@ -60,3 +60,9 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+
+{{- define "two-tier-flask-app.selectorLabels.mysql" -}}
+app.kubernetes.io/name: mysql
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
