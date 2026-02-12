@@ -34,7 +34,7 @@ httpRoute:
 
 env:
   - name: MYSQL_HOST
-    value: mysql
+    value: two-tier-flask-app-mysql
   - name: MYSQL_USER
     value: root
   - name: MYSQL_PASSWORD
