@@ -3,11 +3,11 @@ kind: Service
 metadata:
   name: {{ include "two-tier-flask-app.fullname" . }}-mysql
   labels:
-    {{- include "two-tier-flask-app.labels" . | nindent 4 }}
+    {{- include "two-tier-flask-app.labels" . | nindent 4 }}-mysql
 spec:
   type: {{ .Values.dbService.type }}
   ports:
     - port: {{ .Values.dbService.containerPort }}
       name: {{ .Values.dbService.name }}
   selector:
-    {{- include "two-tier-flask-app.selectorLabels" . | nindent 4 }}
+    {{- include "two-tier-flask-app.selectorLabels" . | nindent 4 }}-mysql
