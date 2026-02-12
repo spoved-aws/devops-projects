@@ -18,15 +18,18 @@ dbService:
 httpRoute:
   enabled: true
   parentRefs:
-  - name: homecluster-gateway
-    namespace: nginx-gateway
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: homecluster-gateway
+      namespace: nginx-gateway
   hostnames:
-  - two-tier-flask-app.654537853.xyz
-  rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /
+    - two-tier-flask-app.654537853.xyz
+  path:
+    type: PathPrefix
+    value: /
+  backend:
+    serviceName: two-tier-flask-app
+    port: 5000
 
 
 env:
