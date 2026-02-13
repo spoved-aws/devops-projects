@@ -8,6 +8,7 @@ metadata:
     argocd-image-updater.argoproj.io/image-list: kanukhosla10/two-tier-flask-app
     #  NEW: Strategy to pick newest SHA tag
     argocd-image-updater.argoproj.io/image-kanukhosla10-two-tier-flask-app.update-strategy: latest
+    argocd-image-updater.argoproj.io/write-back-method: git
     # Optional if image is private
     # argocd-image-updater.argoproj.io/image-kanukhosla10/two-tier-flask-app.pull-secret: dockerhub-secret
 spec:
