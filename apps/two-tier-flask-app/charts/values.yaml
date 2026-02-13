@@ -3,7 +3,7 @@ replicaCount: 1
 image:
   repository: kanukhosla10/two-tier-flask-app
   pullPolicy: IfNotPresent
-  tag: "latest"
+  tag: sha256:cc112e3
 
 appService:
   type: ClusterIP

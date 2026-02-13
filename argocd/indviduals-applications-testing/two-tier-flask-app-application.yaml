@@ -3,17 +3,22 @@ kind: Application
 metadata:
   name: two-tier-flask-app
   namespace: argocd  # This is the ArgoCD namespace, not the target namespace
+  annotations:
+    #  NEW: Tell Image Updater which image to track
+    argocd-image-updater.argoproj.io/image-list: kanukhosla10/two-tier-flask-app
+    #  NEW: Strategy to pick newest SHA tag
+    argocd-image-updater.argoproj.io/image-kanukhosla10/two-tier-flask-app.update-strategy: latest
+    # Optional if image is private
+    # argocd-image-updater.argoproj.io/image-kanukhosla10/two-tier-flask-app.pull-secret: dockerhub-secret
 spec:
   project: default
   source:
     repoURL: https://github.com/spoved-aws/devops-projects.git
     targetRevision: feature/two-tier-flask-app
     path: apps/two-tier-flask-app/charts  # Path to the Helm chart
-
   destination:
     server: https://kubernetes.default.svc
-    namespace: two-tier-flask-app       # This is the namespace where resources will be deployed
- 
+    namespace: two-tier-flask-app       # This is the namespace where resources will be deployed 
   syncPolicy:
     syncOptions:
     - CreateNamespace=true

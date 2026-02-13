@@ -45,7 +45,7 @@ jobs:
             kanukhosla10/two-tier-flask-app:latest
             kanukhosla10/two-tier-flask-app:${{ env.sha_short  }}
 
-      # 5 Render Helm values.yaml from Jinja template
+      # # 5 Render Helm values.yaml from Jinja template
       # - name: Generate deploy manifest from Jinja template
       #   uses: cuchi/jinja2-action@v1.1.0
       #   with: 
@@ -55,17 +55,17 @@ jobs:
       #     variables: |
       #       image_deploy_tag=sha-${{ env.sha_short }}
 
-      # 6 Configure git
-      - name: Configure Git
-        run: |
-          git config --local user.email "${{ vars.GIT_COMMITTER_EMAIL }}"
-          git config --local user.name "${{ vars.GIT_COMMITTER_NAME }}"
+      # # 6 Configure git
+      # - name: Configure Git
+      #   run: |
+      #     git config --local user.email "${{ vars.GIT_COMMITTER_EMAIL }}"
+      #     git config --local user.name "${{ vars.GIT_COMMITTER_NAME }}"
 
-      # 7 Commit changes if any
-      - name: Commit deploy manifest
-        run: |
-          git add apps/two-tier-flask-app/charts/values.yaml
-          git commit -a -m "updated image tag to sha-${{ env.sha_short }}" || echo "No changes to commit"
+      # # 7 Commit changes if any
+      # - name: Commit deploy manifest
+      #   run: |
+      #     git add apps/two-tier-flask-app/charts/values.yaml
+      #     git commit -a -m "updated image tag to sha-${{ env.sha_short }}" || echo "No changes to commit"
 
-          git pull --rebase origin feature/two-tier-flask-app
-          git push origin feature/two-tier-flask-app
+      #     git pull --rebase origin feature/two-tier-flask-app
+      #     git push origin feature/two-tier-flask-app
