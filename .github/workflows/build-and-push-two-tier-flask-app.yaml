@@ -43,7 +43,7 @@ jobs:
           push: true
           tags: |
             kanukhosla10/two-tier-flask-app:latest
-            kanukhosla10/two-tier-flask-app:${{ env.sha_short  }}
+            kanukhosla10/two-tier-flask-app:sha-${{ env.sha_short  }}
 
       # # 5 Render Helm values.yaml from Jinja template
       # - name: Generate deploy manifest from Jinja template
