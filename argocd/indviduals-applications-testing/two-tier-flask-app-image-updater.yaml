@@ -4,17 +4,21 @@ metadata:
   name: two-tier-flask-updater   # Name of this ImageUpdater CR
   namespace: argocd
 spec:
-  namespace: argocd               # Namespace where your Applications live
+  namespace: argocd          # Namespace where your Applications live
   applicationRefs:
     - namePattern: "two-tier-flask-app"  # Matches your Application name
       images:
-        - alias: "two-tier-flask-app"
+        - alias: flask-app
           imageName: "kanukhosla10/two-tier-flask-app"
           commonUpdateSettings:
             updateStrategy: "newest-build"
+          manifestTargets:
+            helm:
+              name: "image.repository" # Maps 'kanukhosla10/two-tier-flask-app'
+              tag: "image.tag"          # Maps the new SHA tag
   writeBackConfig:
     method: "git:secret:argocd/git-creds"
     gitConfig:
       repository: "https://github.com/spoved-aws/devops-projects.git"
       branch: "feature/two-tier-flask-app"
-      writeBackTarget: "helmvalues:apps/two-tier-flask-app/charts/values.yaml"
+      writeBackTarget: "helmvalues:/apps/two-tier-flask-app/charts/values.yaml"
