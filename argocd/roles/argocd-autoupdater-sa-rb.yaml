@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: git-creds-access-binding
+  namespace: argocd
+subjects:
+  - kind: ServiceAccount
+    name: argocd-image-updater-controller
+    namespace: argocd
+roleRef:
+  kind: Role
+  name: git-creds-access
+  apiGroup: rbac.authorization.k8s.io
