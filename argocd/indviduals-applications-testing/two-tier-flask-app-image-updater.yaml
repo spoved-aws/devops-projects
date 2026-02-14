@@ -12,3 +12,9 @@ spec:
           imageName: "kanukhosla10/two-tier-flask-app"
           commonUpdateSettings:
             updateStrategy: "newest-build"
+  writeBackConfig:
+    method: "git:secret:argocd-image-updater/git-creds"
+    gitConfig:
+      repository: "git@github.com:spoved-aws/devops-projects.git"
+      branch: "feature/two-tier-flask-app"
+      writeBackTarget: "helmvalues:apps/two-tier-flask-app/charts/values.yaml"
