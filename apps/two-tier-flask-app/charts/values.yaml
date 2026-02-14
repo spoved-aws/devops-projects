@@ -1,47 +1,40 @@
 replicaCount: 1
-
 image:
   repository: kanukhosla10/two-tier-flask-app
   pullPolicy: IfNotPresent
-  tag: sha-79d447b
-
+  tag: sha-00261d7
 appService:
   type: ClusterIP
   containerPort: 5000
   targetPort: 5000
-
 dbService:
   type: ClusterIP
   containerPort: 3306
   name: mysql
-
 httpRoute:
   enabled: true
   parentRefs:
-    - group: gateway.networking.k8s.io
-      kind: Gateway
-      name: homecluster-gateway
-      namespace: nginx-gateway
+  - group: gateway.networking.k8s.io
+    kind: Gateway
+    name: homecluster-gateway
+    namespace: nginx-gateway
   hostnames:
-    - two-tier-flask-app.654537853.xyz
+  - two-tier-flask-app.654537853.xyz
   path:
     type: PathPrefix
     value: /
   backend:
     serviceName: two-tier-flask-app
     port: 5000
-
-
 env:
-  - name: MYSQL_HOST
-    value: two-tier-flask-app-mysql
-  - name: MYSQL_USER
-    value: root
-  - name: MYSQL_PASSWORD
-    value: root
-  - name: MYSQL_DB
-    value: devops
-
+- name: MYSQL_HOST
+  value: two-tier-flask-app-mysql
+- name: MYSQL_USER
+  value: root
+- name: MYSQL_PASSWORD
+  value: root
+- name: MYSQL_DB
+  value: devops
 readinessProbe:
   httpGet:
     path: /health
@@ -50,7 +43,6 @@ readinessProbe:
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 5
-
 mysql:
   replicaCount: 1
   rootPassword: root
@@ -58,17 +50,13 @@ mysql:
   image: mysql:8.1
   name: mysql-flask
   port: 3306
-
 volumes:
   name: mysql-data
-
 volumeMounts:
   name: mysql-data
   mountPath: "/var/lib/mysql"
   readOnly: true
-
 fullnameOverride: ""
 nameOverride: ""
-
 autoscaling:
   enabled: false
