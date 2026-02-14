@@ -1,8 +1,14 @@
 apiVersion: argocd-image-updater.argoproj.io/v1alpha1
 kind: ImageUpdater
 metadata:
-  name: two-tier-flask-app-updater
+  name: two-tier-flask-updater   # Name of this ImageUpdater CR
   namespace: argocd
 spec:
-  applicationRef:
-    name: two-tier-flask-app
+  namespace: argocd               # Namespace where your Applications live
+  applicationRefs:
+    - namePattern: "two-tier-flask-app"  # Matches your Application name
+      images:
+        - alias: "two-tier-flask-app"
+          imageName: "kanukhosla10/two-tier-flask-app"
+          commonUpdateSettings:
+            updateStrategy: "newest-build"

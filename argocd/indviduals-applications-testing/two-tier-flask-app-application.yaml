@@ -5,9 +5,10 @@ metadata:
   namespace: argocd  # This is the ArgoCD namespace, not the target namespace
   annotations:
     #  NEW: Tell Image Updater which image to track
-    argocd-image-updater.argoproj.io/image-list: kanukhosla10/two-tier-flask-app:sha-x
+    argocd-image-updater.argoproj.io/image-list: kanukhosla10/two-tier-flask-app
     #  NEW: Strategy to pick newest SHA tag
     argocd-image-updater.argoproj.io/two-tier-flask-app.update-strategy: semver
+    argocd-image-updater.argoproj.io/two-tier-flask-app.semver-regex: '^sha-[0-9a-f]+$'
     argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/git-creds
     # Optional if image is private
     # argocd-image-updater.argoproj.io/image-kanukhosla10/two-tier-flask-app.pull-secret: dockerhub-secret
