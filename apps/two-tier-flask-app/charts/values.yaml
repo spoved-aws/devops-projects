@@ -2,7 +2,7 @@ replicaCount: 1
 image:
   repository: kanukhosla10/two-tier-flask-app
   pullPolicy: IfNotPresent
-  tag: sha-d18e49e
+  tag: sha-a735331
 appService:
   type: ClusterIP
   containerPort: 5000
