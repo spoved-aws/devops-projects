@@ -44,15 +44,20 @@ def init_db():
 # ----------------------------
 # Health endpoint (readiness probe)
 # ----------------------------
+# @app.route("/health")
+# def health():
+#     try:
+#         cur = mysql.connection.cursor()
+#         cur.execute("SELECT 1")
+#         cur.close()
+#         return "ok", 200
+#     except Exception:
+#         return "db not ready", 503
+
+# Change health endpoint to force failure
 @app.route("/health")
 def health():
-    try:
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT 1")
-        cur.close()
-        return "ok", 200
-    except Exception:
-        return "db not ready", 503
+    return "forced failure", 500
 
 # ----------------------------
 # Main routes
@@ -61,7 +66,7 @@ def health():
 def hello():
     cur = mysql.connection.cursor()
     #cur.execute('SELECT message FROM messages')
-    cur.execute('SELECT message FROM messages_broken')
+    cur.execute('SELECT message FROM messages')
     messages = cur.fetchall()
     cur.close()
     return render_template('index.html', messages=messages)
