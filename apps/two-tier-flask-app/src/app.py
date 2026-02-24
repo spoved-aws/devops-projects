@@ -60,7 +60,8 @@ def health():
 @app.route('/')
 def hello():
     cur = mysql.connection.cursor()
-    cur.execute('SELECT message FROM messages')
+    #cur.execute('SELECT message FROM messages')
+    cur.execute('SELECT message FROM messages_broken')
     messages = cur.fetchall()
     cur.close()
     return render_template('index.html', messages=messages)
