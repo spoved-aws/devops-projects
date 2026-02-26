@@ -34,12 +34,23 @@ Create chart name and version as used by the chart label.
 Common labels
 */}}
 {{- define "two-tier-flask-app.labels" -}}
+
 helm.sh/chart: {{ include "two-tier-flask-app.chart" . }}
-{{ include "two-tier-flask-app.selectorLabels" . }}
-{{- if .Chart.AppVersion }}
+
+# Required Kubernetes recommended labels
+app.kubernetes.io/name: {{ include "two-tier-flask-app.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
-{{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+
+# Enterprise extensions
+app.kubernetes.io/component: {{ .Values.component | default "backend" }}
+app.kubernetes.io/cluster: {{ .Values.cluster | default "k3s-synology" }}
+
+environment: {{ .Values.environment | default "dev" }}
+team: {{ .Values.team | default "platform" }}
+tier: {{ .Values.tier | default "api" }}
+
 {{- end }}
 
 {{/*
@@ -65,4 +76,9 @@ Create the name of the service account to use
 {{- define "two-tier-flask-app.selectorLabels.mysql" -}}
 app.kubernetes.io/name: mysql
 app.kubernetes.io/instance: {{ .Release.Name }}
+
+# Enterprise extensions
+component: database
+tier: backend
+part-of: {{ include "two-tier-flask-app.name" . }}
 {{- end }}

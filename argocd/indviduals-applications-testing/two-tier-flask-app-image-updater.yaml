@@ -22,3 +22,4 @@ spec:
       repository: "https://github.com/spoved-aws/devops-projects.git"
       branch: "feature/two-tier-flask-app"
       writeBackTarget: "helmvalues:/apps/two-tier-flask-app/charts/values.yaml"
+      commitMessage: "chore(deps): Updating img tag from {{ .OldTag }} to {{ .NewTag }} [skip ci]"

@@ -1,8 +1,15 @@
+# Common Labels
+environment: local
+team: platform
+component: flask
+tier: api
+cluster: k3s-synology
+
 replicaCount: 1
 image:
   repository: kanukhosla10/two-tier-flask-app
   pullPolicy: Always
-  tag: sha-890ee47
+  tag: sha-6fa7954
 appService:
   type: ClusterIP
   containerPort: 5000
