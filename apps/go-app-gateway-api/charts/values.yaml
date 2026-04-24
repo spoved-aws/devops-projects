@@ -38,8 +38,8 @@ autoscaling:
 
 service:
   portName: http
-  port: 8089
-  containerPort: 8089
+  port: 8080
+  containerPort: 8080
   type: ClusterIP
 
 ingress:

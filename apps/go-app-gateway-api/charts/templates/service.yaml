@@ -9,7 +9,6 @@ metadata:
 spec:
   selector:
     app: {{ include "go-app-gateway-api.name" . }}
-  {{ include "go-app-gateway-api.selectorLabels" . | nindent 4 }}
   ports:
     - protocol: TCP
       name: {{ .Values.service.portName }}
