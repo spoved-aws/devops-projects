@@ -14,5 +14,5 @@ spec:
         type: PathPrefix
         value: /
     backendRefs:
-    - name: {{ .Values.service.name }}
-      port: {{ .Values.service.port }}
+    - name: {{ .Chart.Name }}-service
+      port: {{ .Values.service.containerPort }}
