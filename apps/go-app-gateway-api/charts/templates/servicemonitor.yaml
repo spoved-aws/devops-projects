@@ -8,7 +8,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: {{ .Chart.Name }}  # This must match the label on your service
+      app: {{ .Chart.Name }}-service   # This must match the label on your service
   namespaceSelector:
     matchNames:
     - {{ .Values.appNamespace }} # The namespace where your service is running
