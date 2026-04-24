@@ -12,7 +12,7 @@ spec:
     {{ include "go-app-gateway-api.labels" . | nindent 4 }}   # This must match the label on your service
   namespaceSelector:
     matchNames:
-    - {{ .Values.appNamespace }} # The namespace where your service is running
+    - {{ .Release.Namespace }} # The namespace where your service is running
   endpoints:
   - port: "http"  # Port where the service is exposing metrics (as a string)
     path: /metrics  # The path where your application exposes Prometheus metrics
