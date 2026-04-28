@@ -23,7 +23,7 @@ probes:
     initialDelaySeconds: 15
     periodSeconds: 20
 
-containerPort: 8080
+
 
 readinessProbe:
   port: 8080
@@ -41,7 +41,7 @@ autoscaling:
 service:
   name: go-app-gateway-api-service
   portName: http
-  port: 8089
+  port: 8080
   type: ClusterIP
   containerPort: 8080
 
