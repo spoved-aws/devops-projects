@@ -21,7 +21,7 @@ probes:
     initialDelaySeconds: 15
     periodSeconds: 20
 
-containerPort: 8080
+
 readinessProbe:
   port: 8080
 livenessProbe:
@@ -37,10 +37,10 @@ autoscaling:
     averageValue: '350Mi'
 
 service:
-  name: go-ks-app-arm-service
   portName: http
-  port: 8089
+  port: 8080
   type: ClusterIP
+  containerPort: 8080
 
 ingress:
   entrypoints: websecure
