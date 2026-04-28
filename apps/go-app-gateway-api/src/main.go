@@ -88,6 +88,8 @@ func initTracer() func() {
 		log.Fatalf("failed to create exporter: %v", err)
 	}
 
+	log.Println("OTEL exporter initialized")  // 👈 ADD THIS
+
 	tp := trace.NewTracerProvider(
 		trace.WithBatcher(exporter),
 		trace.WithResource(resource.NewWithAttributes(
