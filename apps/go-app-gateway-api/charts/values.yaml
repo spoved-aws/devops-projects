@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: docker.io/kanukhosla10/go-kubesimplify
-  tag: sha-bb8ed7b
+  tag: sha-8693eba
   pullPolicy: Always
 
 resources:
@@ -37,9 +37,9 @@ autoscaling:
     averageValue: '350Mi'
 
 service:
+  name: go-ks-app-arm-service
   portName: http
-  port: 8080
-  containerPort: 8080
+  port: 8089
   type: ClusterIP
 
 ingress:
