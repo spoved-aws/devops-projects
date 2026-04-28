@@ -40,7 +40,7 @@ spec:
             - name: DB_NAME
               value: "{{ .Values.postgresql.database }}"
           ports:
-            - containerPort: {{ .Values.containerPort }}
+            - containerPort: {{ .Values.service.containerPort }}
           readinessProbe:
             httpGet:
               path: /health
